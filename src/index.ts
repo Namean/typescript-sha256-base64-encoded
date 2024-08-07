@@ -1,6 +1,12 @@
+//const crypto = require('crypto');
+import crypto from 'crypto';
+
+
 const randomStr = (len: number) => {
   const arr = new Uint8Array(len);
-  window.crypto.getRandomValues(arr);
+  const hash = crypto.createHash('sha256');
+  hash.update(arr);
+  // window.crypto.getRandomValues(arr);
   return String.fromCharCode(...toCharCodes(arr));
 };
 
@@ -13,7 +19,11 @@ const toCharCodes = (arr: Uint8Array) => {
 const sha256 = (message: string) => {
   const encoder = new TextEncoder();
   const data = encoder.encode(message);
-  return window.crypto.subtle.digest('SHA-256', data);
+  //return window.crypto.subtle.digest('SHA-256', data);
+  const hash = crypto.createHash('sha256');
+  hash.update(message);
+  return hash;
+  return String.fromCharCode(...toCharCodes(hash))
 };
 
 const bufferToBase64UrlEncoded = (input: ArrayBuffer) => {
@@ -43,11 +53,18 @@ const urlEncodeBase64 = (input: string) => {
 
   // const input_text = 'Hello, my name is Desmond';
   const input_text = 'factory pattern';
-  const shaBuffer = await sha256(input_text);
+  const shaBuffer = sha256(input_text);
+  console.log(`shaBuffer: ${shaBuffer}`)
   const encoded = bufferToBase64UrlEncoded(shaBuffer);
   const encoded_input_text = bufferToBase64UrlEncoded(await sha256(input_text));
 
-  document.getElementById('text').textContent += ` ${input_text}`;
-  document.getElementById('encoded').textContent += encoded;
-  document.getElementById('two').textContent += encoded_input_text;
+  /*
+    document.getElementById('text').textContent += ` ${input_text}`;
+    document.getElementById('encoded').textContent += encoded;
+    document.getElementById('two').textContent += encoded_input_text;
+  */
+
 })();
+
+
+export { };
